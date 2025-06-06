@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Paint The Animal</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0c0c0c 0%, #1a1a2e 25%, #16213e 50%, #0f3460 75%, #533483 100%);
+            min-height: 100vh;
+            color: white;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background:
+                radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(120, 219, 255, 0.1) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .glass {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 30px;
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4, #feca57);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+            text-shadow: 0 0 30px rgba(255, 107, 107, 0.3);
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from {
+                filter: drop-shadow(0 0 20px rgba(255, 107, 107, 0.3));
+            }
+
+            to {
+                filter: drop-shadow(0 0 30px rgba(78, 205, 196, 0.4));
+            }
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.8;
+            margin-bottom: 20px;
+        }
+
+        .game-area {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .target-area,
+        .canvas-area {
+            padding: 30px;
+            text-align: center;
+        }
+
+        .target-area h3,
+        .canvas-area h3 {
+            margin-bottom: 20px;
+            font-size: 1.4rem;
+            color: #4ecdc4;
+        }
+
+        #targetAnimal {
+            width: 300px;
+            height: 300px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 150px;
+            transition: all 0.3s ease;
+        }
+
+        #targetAnimal:hover {
+            transform: scale(1.05);
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        #drawingCanvas {
+            border: 3px solid rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            cursor: crosshair;
+            background: rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        #drawingCanvas:hover {
+            border-color: rgba(78, 205, 196, 0.6);
+            box-shadow: 0 0 20px rgba(78, 205, 196, 0.3);
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-bottom: 30px;
+            padding: 20px;
+        }
+
+        button {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 25px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+            color: white;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .score-area {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-bottom: 30px;
+            padding: 20px;
+        }
+
+        .score-item {
+            text-align: center;
+            padding: 20px;
+            min-width: 120px;
+        }
+
+        .score-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .score-label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .animal-name {
+            padding: 15px;
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .message {
+            text-align: center;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 15px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.5s ease;
+        }
+
+        .message.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .message.success {
+            background: linear-gradient(135deg, rgba(76, 175, 80, 0.2) 0%, rgba(129, 199, 132, 0.2) 100%);
+            border: 1px solid rgba(76, 175, 80, 0.3);
+            color: #81c784;
+        }
+
+        .message.error {
+            background: linear-gradient(135deg, rgba(244, 67, 54, 0.2) 0%, rgba(239, 154, 154, 0.2) 100%);
+            border: 1px solid rgba(244, 67, 54, 0.3);
+            color: #ef9a9a;
+        }
+
+        .brush-size {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 20px;
+            border-radius: 25px;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .brush-size input {
+            width: 100px;
+        }
+
+        .brush-size label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        @media (max-width: 768px) {
+            .game-area {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            h1 {
+                font-size: 2.5rem;
+            }
+
+            #targetAnimal,
+            #drawingCanvas {
+                width: 280px;
+                height: 280px;
+            }
+
+            .controls {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .score-area {
+                flex-direction: column;
+                gap: 20px;
+            }
+        }
+
+        .celebration {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1000;
+        }
+
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: #ff6b6b;
+            animation: confetti-fall 3s linear infinite;
+        }
+
+        @keyframes confetti-fall {
+            0% {
+                transform: translateY(-100vh) rotate(0deg);
+                opacity: 1;
+            }
+
+            100% {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header class="glass">
+            <h1>🎨 Paint The Animal</h1>
+            <p class="subtitle">Draw the animal silhouette to win! Use your mouse or finger to paint.</p>
+        </header>
+
+        <div class="score-area">
+            <div class="score-item glass">
+                <div class="score-number" id="score">0</div>
+                <div class="score-label">Score</div>
+            </div>
+            <div class="score-item glass">
+                <div class="score-number" id="level">1</div>
+                <div class="score-label">Level</div>
+            </div>
+            <div class="score-item glass">
+                <div class="score-number" id="streak">0</div>
+                <div class="score-label">Streak</div>
+            </div>
+        </div>
+
+        <div class="glass animal-name" id="animalName">Draw a Cat!</div>
+
+        <div class="game-area glass">
+            <div class="target-area">
+                <h3>🎯 Target Animal</h3>
+                <div id="targetAnimal">🐱</div>
+            </div>
+            <div class="canvas-area">
+                <h3>🖌️ Your Drawing</h3>
+                <canvas id="drawingCanvas" width="300" height="300"></canvas>
+            </div>
+        </div>
+
+        <div class="controls glass">
+            <button class="btn-primary" onclick="checkDrawing()">✅ Check Drawing</button>
+            <button class="btn-secondary" onclick="clearCanvas()">🗑️ Clear</button>
+            <button class="btn-success" onclick="nextAnimal()">⏭️ Next Animal</button>
+            <button class="btn-warning" onclick="showHint()">💡 Hint</button>
+            <div class="brush-size">
+                <label>Brush:</label>
+                <input type="range" id="brushSize" min="2" max="20" value="8" onchange="updateBrushSize()">
+                <span id="brushSizeValue">8px</span>
+            </div>
+        </div>
+
+        <div class="message" id="message"></div>
+    </div>
+
+    <div class="celebration" id="celebration"></div>
+
+    <script>
+        const animals = [
+            { name: "Cat", emoji: "🐱", hint: "Meows and has whiskers" },
+            { name: "Dog", emoji: "🐶", hint: "Barks and wags tail" },
+            { name: "Lion", emoji: "🦁", hint: "King of the jungle with a mane" },
+            { name: "Tiger", emoji: "🐯", hint: "Orange with black stripes" },
+            { name: "Elephant", emoji: "🐘", hint: "Large with a trunk" },
+            { name: "Giraffe", emoji: "🦒", hint: "Very tall with long neck" },
+            { name: "Zebra", emoji: "🦓", hint: "Black and white stripes" },
+            { name: "Horse", emoji: "🐴", hint: "Gallops and neighs" },
+            { name: "Cow", emoji: "🐄", hint: "Moos and gives milk" },
+            { name: "Pig", emoji: "🐷", hint: "Pink and oinks" },
+            { name: "Sheep", emoji: "🐑", hint: "Wooly and says baa" },
+            { name: "Rabbit", emoji: "🐰", hint: "Hops and has long ears" },
+            { name: "Mouse", emoji: "🐭", hint: "Small and squeaks" },
+            { name: "Bear", emoji: "🐻", hint: "Large and hibernates" },
+            { name: "Panda", emoji: "🐼", hint: "Black and white, eats bamboo" },
+            { name: "Koala", emoji: "🐨", hint: "Australian, sleeps a lot" },
+            { name: "Monkey", emoji: "🐵", hint: "Swings from trees" },
+            { name: "Gorilla", emoji: "🦍", hint: "Large primate" },
+            { name: "Fox", emoji: "🦊", hint: "Clever and orange" },
+            { name: "Wolf", emoji: "🐺", hint: "Howls at the moon" },
+            { name: "Frog", emoji: "🐸", hint: "Green and ribbits" },
+            { name: "Turtle", emoji: "🐢", hint: "Slow with a shell" },
+            { name: "Snake", emoji: "🐍", hint: "Long and slithers" },
+            { name: "Fish", emoji: "🐟", hint: "Swims in water" },
+            { name: "Shark", emoji: "🦈", hint: "Dangerous ocean predator" },
+            { name: "Whale", emoji: "🐳", hint: "Largest ocean mammal" },
+            { name: "Dolphin", emoji: "🐬", hint: "Smart ocean mammal" },
+            { name: "Octopus", emoji: "🐙", hint: "Eight arms" },
+            { name: "Crab", emoji: "🦀", hint: "Sideways walking with claws" },
+            { name: "Lobster", emoji: "🦞", hint: "Red with big claws" },
+            { name: "Bird", emoji: "🐦", hint: "Flies and chirps" },
+            { name: "Eagle", emoji: "🦅", hint: "Soars high, sharp eyes" },
+            { name: "Owl", emoji: "🦉", hint: "Nocturnal and wise" },
+            { name: "Penguin", emoji: "🐧", hint: "Black and white, waddles" },
+            { name: "Chicken", emoji: "🐔", hint: "Lays eggs and clucks" },
+            { name: "Duck", emoji: "🦆", hint: "Quacks and swims" },
+            { name: "Turkey", emoji: "🦃", hint: "Gobbles and has feathers" },
+            { name: "Peacock", emoji: "🦚", hint: "Beautiful colorful tail" },
+            { name: "Swan", emoji: "🦢", hint: "Elegant white bird" },
+            { name: "Butterfly", emoji: "🦋", hint: "Colorful wings, used to be caterpillar" },
+            { name: "Bee", emoji: "🐝", hint: "Makes honey and buzzes" },
+            { name: "Ant", emoji: "🐜", hint: "Works in colonies" },
+            { name: "Spider", emoji: "🕷️", hint: "Eight legs and spins webs" },
+            { name: "Scorpion", emoji: "🦂", hint: "Desert creature with stinger" },
+            { name: "Snail", emoji: "🐌", hint: "Slow with spiral shell" },
+            { name: "Ladybug", emoji: "🐞", hint: "Red with black spots" },
+            { name: "Dragonfly", emoji: "🕴️", hint: "Fast flying insect" },
+            { name: "Camel", emoji: "🐪", hint: "Desert animal with hump" },
+            { name: "Llama", emoji: "🦙", hint: "Fluffy South American animal" },
+            { name: "Deer", emoji: "🦌", hint: "Forest animal with antlers" },
+            { name: "Kangaroo", emoji: "🦘", hint: "Hops and has a pouch" },
+            { name: "Sloth", emoji: "🦥", hint: "Very slow moving" },
+            { name: "Hedgehog", emoji: "🦔", hint: "Spiky small mammal" },
+            { name: "Bat", emoji: "🦇", hint: "Flies at night" },
+            { name: "Squirrel", emoji: "🐿️", hint: "Collects nuts" },
+            { name: "Chipmunk", emoji: "🐿️", hint: "Small striped rodent" },
+            { name: "Raccoon", emoji: "🦝", hint: "Masked bandit" },
+            { name: "Skunk", emoji: "🦨", hint: "Black and white, smelly" },
+            { name: "Otter", emoji: "🦦", hint: "Playful water mammal" },
+            { name: "Seal", emoji: "🦭", hint: "Ocean mammal that barks" },
+            { name: "Walrus", emoji: "🦭", hint: "Large with tusks" },
+            { name: "Hippo", emoji: "🦛", hint: "Large water-loving mammal" },
+            { name: "Rhino", emoji: "🦏", hint: "Gray with horn" },
+            { name: "Buffalo", emoji: "🐃", hint: "Large horned animal" },
+            { name: "Yak", emoji: "🐂", hint: "Hairy mountain animal" },
+            { name: "Goat", emoji: "🐐", hint: "Climbs mountains, has horns" },
+            { name: "Ram", emoji: "🐏", hint: "Male sheep with curved horns" }
+        ];
+
+        let currentAnimal = 0;
+        let score = 0;
+        let level = 1;
+        let streak = 0;
+        let canvas, ctx;
+        let isDrawing = false;
+        let brushSize = 8;
+
+        function initGame() {
+            canvas = document.getElementById('drawingCanvas');
+            ctx = canvas.getContext('2d');
+
+            // Set up canvas drawing
+            canvas.addEventListener('mousedown', startDrawing);
+            canvas.addEventListener('mousemove', draw);
+            canvas.addEventListener('mouseup', stopDrawing);
+            canvas.addEventListener('mouseout', stopDrawing);
+
+            // Touch events for mobile
+            canvas.addEventListener('touchstart', handleTouch);
+            canvas.addEventListener('touchmove', handleTouch);
+            canvas.addEventListener('touchend', stopDrawing);
+
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+            ctx.strokeStyle = '#ffffff';
+            ctx.lineWidth = brushSize;
+
+            loadRandomAnimal();
+        }
+
+        function loadRandomAnimal() {
+            currentAnimal = Math.floor(Math.random() * animals.length);
+            const animal = animals[currentAnimal];
+
+            document.getElementById('targetAnimal').textContent = animal.emoji;
+            document.getElementById('animalName').textContent = `Draw a ${animal.name}!`;
+
+            clearCanvas();
+            hideMessage();
+        }
+
+        function startDrawing(e) {
+            isDrawing = true;
+            const rect = canvas.getBoundingClientRect();
+            ctx.beginPath();
+            ctx.moveTo(e.clientX - rect.left, e.clientY - rect.top);
+        }
+
+        function draw(e) {
+            if (!isDrawing) return;
+
+            const rect = canvas.getBoundingClientRect();
+            ctx.lineTo(e.clientX - rect.left, e.clientY - rect.top);
+            ctx.stroke();
+        }
+
+        function stopDrawing() {
+            isDrawing = false;
+        }
+
+        function handleTouch(e) {
+            e.preventDefault();
+            const touch = e.touches[0];
+            const mouseEvent = new MouseEvent(e.type === 'touchstart' ? 'mousedown' :
+                e.type === 'touchmove' ? 'mousemove' : 'mouseup', {
+                clientX: touch.clientX,
+                clientY: touch.clientY
+            });
+            canvas.dispatchEvent(mouseEvent);
+        }
+
+        function clearCanvas() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+
+        function updateBrushSize() {
+            brushSize = document.getElementById('brushSize').value;
+            ctx.lineWidth = brushSize;
+            document.getElementById('brushSizeValue').textContent = brushSize + 'px';
+        }
+
+        function checkDrawing() {
+            // Simple check - if there's something drawn on canvas
+            const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            const pixels = imageData.data;
+            let hasDrawing = false;
+
+            for (let i = 0; i < pixels.length; i += 4) {
+                if (pixels[i + 3] > 0) { // Check alpha channel
+                    hasDrawing = true;
+                    break;
+                }
+            }
+
+            if (!hasDrawing) {
+                showMessage("Draw something first! 🎨", "error");
+                return;
+            }
+
+            // For this demo, we'll randomly determine success (70% chance)
+            // In a real implementation, you'd use image recognition
+            const success = Math.random() > 0.3;
+
+            if (success) {
+                score += (10 * level);
+                streak++;
+                if (streak % 5 === 0) {
+                    level++;
+                }
+                updateScore();
+                showMessage(`Great job! You drew the ${animals[currentAnimal].name}! 🎉`, "success");
+                createConfetti();
+                setTimeout(() => {
+                    nextAnimal();
+                }, 2000);
+            } else {
+                streak = 0;
+                updateScore();
+                showMessage(`Not quite right. Try again or get a hint! 🤔`, "error");
+            }
+        }
+
+        function nextAnimal() {
+            loadRandomAnimal();
+        }
+
+        function showHint() {
+            const hint = animals[currentAnimal].hint;
+            showMessage(`Hint: ${hint} 💡`, "success");
+        }
+
+        function showMessage(text, type) {
+            const messageEl = document.getElementById('message');
+            messageEl.textContent = text;
+            messageEl.className = `message ${type} show`;
+        }
+
+        function hideMessage() {
+            const messageEl = document.getElementById('message');
+            messageEl.className = 'message';
+        }
+
+        function updateScore() {
+            document.getElementById('score').textContent = score;
+            document.getElementById('level').textContent = level;
+            document.getElementById('streak').textContent = streak;
+        }
+
+        function createConfetti() {
+            const celebration = document.getElementById('celebration');
+            const colors = ['#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#feca57', '#ff9ff3', '#54a0ff'];
+
+            for (let i = 0; i < 50; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.left = Math.random() * 100 + '%';
+                confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.animationDelay = Math.random() * 3 + 's';
+                confetti.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                celebration.appendChild(confetti);
+
+                setTimeout(() => {
+                    confetti.remove();
+                }, 5000);
+            }
+        }
+
+        // Initialize the game when page loads
+        window.addEventListener('load', initGame);
+    </script>
+</body>
+
+</html>

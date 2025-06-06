@@ -144,6 +144,11 @@
             padding: 20px;
         }
 
+        .btn-erase {
+            background: linear-gradient(135deg, #fd79a8 0%, #fdcb6e 100%);
+            color: white;
+        }
+
         button {
             padding: 12px 25px;
             border: none;
@@ -370,6 +375,7 @@
         <div class="controls glass">
             <button class="btn-primary" onclick="checkDrawing()">✅ Check Drawing</button>
             <button class="btn-secondary" onclick="clearCanvas()">🗑️ Clear</button>
+            <button class="btn-erase" onclick="toggleEraser()">🧹 <span id="eraserText">Erase</span></button>
             <button class="btn-success" onclick="nextAnimal()">⏭️ Next Animal</button>
             <button class="btn-warning" onclick="showHint()">💡 Hint</button>
             <div class="brush-size">
@@ -452,7 +458,106 @@
             { name: "Buffalo", emoji: "🐃", hint: "Large horned animal" },
             { name: "Yak", emoji: "🐂", hint: "Hairy mountain animal" },
             { name: "Goat", emoji: "🐐", hint: "Climbs mountains, has horns" },
-            { name: "Ram", emoji: "🐏", hint: "Male sheep with curved horns" }
+            { name: "Ram", emoji: "🐏", hint: "Male sheep with curved horns" },
+            { name: "Cheetah", emoji: "🐆", hint: "Fastest land animal with spots" },
+            { name: "Leopard", emoji: "🐆", hint: "Spotted big cat" },
+            { name: "Jaguar", emoji: "🐆", hint: "Powerful spotted cat from Americas" },
+            { name: "Lynx", emoji: "🐈‍⬛", hint: "Wild cat with tufted ears" },
+            { name: "Puma", emoji: "🐈", hint: "Mountain lion" },
+            { name: "Bobcat", emoji: "🐈", hint: "Small wild cat with short tail" },
+            { name: "Ocelot", emoji: "🐈", hint: "Small spotted wild cat" },
+            { name: "Serval", emoji: "🐈", hint: "African wild cat with long legs" },
+            { name: "Caracal", emoji: "🐈", hint: "Desert cat with black ear tufts" },
+            { name: "Chimpanzee", emoji: "🐵", hint: "Our closest relative" },
+            { name: "Orangutan", emoji: "🦧", hint: "Red-haired great ape" },
+            { name: "Baboon", emoji: "🐵", hint: "Large monkey with colorful face" },
+            { name: "Macaque", emoji: "🐵", hint: "Asian monkey" },
+            { name: "Lemur", emoji: "🐵", hint: "Madagascar primate with long tail" },
+            { name: "Marmoset", emoji: "🐵", hint: "Tiny monkey" },
+            { name: "Capuchin", emoji: "🐵", hint: "Intelligent New World monkey" },
+            { name: "Howler Monkey", emoji: "🐵", hint: "Loudest land animal" },
+            { name: "Spider Monkey", emoji: "🐵", hint: "Long-armed monkey" },
+            { name: "Proboscis Monkey", emoji: "🐵", hint: "Monkey with big nose" },
+            { name: "Mandrill", emoji: "🐵", hint: "Colorful faced primate" },
+            { name: "Gibbon", emoji: "🐵", hint: "Swinging ape" },
+            { name: "Polar Bear", emoji: "🐻‍❄️", hint: "White Arctic bear" },
+            { name: "Grizzly Bear", emoji: "🐻", hint: "Brown North American bear" },
+            { name: "Black Bear", emoji: "🐻", hint: "Smaller North American bear" },
+            { name: "Sun Bear", emoji: "🐻", hint: "Smallest bear from Asia" },
+            { name: "Spectacled Bear", emoji: "🐻", hint: "South American bear" },
+            { name: "Sloth Bear", emoji: "🐻", hint: "Shaggy bear from India" },
+            { name: "Asiatic Black Bear", emoji: "🐻", hint: "Moon bear" },
+            { name: "Red Panda", emoji: "🐼", hint: "Small bamboo eater" },
+            { name: "Fennec Fox", emoji: "🦊", hint: "Desert fox with big ears" },
+            { name: "Arctic Fox", emoji: "🦊", hint: "White winter fox" },
+            { name: "Red Fox", emoji: "🦊", hint: "Common orange fox" },
+            { name: "Gray Wolf", emoji: "🐺", hint: "Pack hunter" },
+            { name: "Coyote", emoji: "🐺", hint: "Prairie wolf" },
+            { name: "Jackal", emoji: "🐺", hint: "African wild dog" },
+            { name: "Dingo", emoji: "🐕", hint: "Australian wild dog" },
+            { name: "Hyena", emoji: "🐕", hint: "Laughing scavenger" },
+            { name: "Wombat", emoji: "🐨", hint: "Cube-pooping Australian" },
+            { name: "Tasmanian Devil", emoji: "🐨", hint: "Fierce Australian marsupial" },
+            { name: "Platypus", emoji: "🦫", hint: "Egg-laying mammal" },
+            { name: "Echidna", emoji: "🦔", hint: "Spiny anteater" },
+            { name: "Armadillo", emoji: "🦔", hint: "Armored mammal" },
+            { name: "Pangolin", emoji: "🦔", hint: "Scaly anteater" },
+            { name: "Anteater", emoji: "🐜", hint: "Long snout insect eater" },
+            { name: "Aardvark", emoji: "🐷", hint: "African ant eater" },
+            { name: "Capybara", emoji: "🐹", hint: "Largest rodent" },
+            { name: "Guinea Pig", emoji: "🐹", hint: "Small pet rodent" },
+            { name: "Hamster", emoji: "🐹", hint: "Cheek-stuffing pet" },
+            { name: "Gerbil", emoji: "🐭", hint: "Desert rodent" },
+            { name: "Chinchilla", emoji: "🐭", hint: "Soft-furred rodent" },
+            { name: "Rat", emoji: "🐀", hint: "Larger than mouse" },
+            { name: "Beaver", emoji: "🦫", hint: "Dam-building rodent" },
+            { name: "Porcupine", emoji: "🦔", hint: "Quill-covered rodent" },
+            { name: "Muskrat", emoji: "🐀", hint: "Aquatic rodent" },
+            { name: "Prairie Dog", emoji: "🐹", hint: "Burrowing social rodent" },
+            { name: "Groundhog", emoji: "🐹", hint: "Weather-predicting rodent" },
+            { name: "Marmot", emoji: "🐹", hint: "Mountain rodent" },
+            { name: "Chipmunk", emoji: "🐿️", hint: "Striped tree rodent" },
+            { name: "Flying Squirrel", emoji: "🐿️", hint: "Gliding rodent" },
+            { name: "Moose", emoji: "🫎", hint: "Largest deer with antlers" },
+            { name: "Elk", emoji: "🦌", hint: "Large deer" },
+            { name: "Reindeer", emoji: "🦌", hint: "Arctic deer" },
+            { name: "Caribou", emoji: "🦌", hint: "Wild reindeer" },
+            { name: "Roe Deer", emoji: "🦌", hint: "Small European deer" },
+            { name: "Mule Deer", emoji: "🦌", hint: "Large-eared deer" },
+            { name: "White-tailed Deer", emoji: "🦌", hint: "Common American deer" },
+            { name: "Antelope", emoji: "🦌", hint: "Fast African grazer" },
+            { name: "Gazelle", emoji: "🦌", hint: "Graceful African antelope" },
+            { name: "Impala", emoji: "🦌", hint: "Leaping antelope" },
+            { name: "Springbok", emoji: "🦌", hint: "Bouncing antelope" },
+            { name: "Kudu", emoji: "🦌", hint: "Spiral-horned antelope" },
+            { name: "Oryx", emoji: "🦌", hint: "Desert antelope" },
+            { name: "Ibex", emoji: "🐐", hint: "Mountain goat" },
+            { name: "Bighorn Sheep", emoji: "🐏", hint: "Rocky mountain sheep" },
+            { name: "Dall Sheep", emoji: "🐏", hint: "White mountain sheep" },
+            { name: "Mouflon", emoji: "🐏", hint: "Wild sheep" },
+            { name: "Markhor", emoji: "🐐", hint: "Screw-horned goat" },
+            { name: "Chamois", emoji: "🐐", hint: "Alpine antelope-goat" },
+            { name: "Musk Ox", emoji: "🐂", hint: "Shaggy Arctic bovine" },
+            { name: "Bison", emoji: "🐃", hint: "American buffalo" },
+            { name: "Water Buffalo", emoji: "🐃", hint: "Asian working animal" },
+            { name: "Cape Buffalo", emoji: "🐃", hint: "Dangerous African buffalo" },
+            { name: "Gaur", emoji: "🐂", hint: "Largest wild cattle" },
+            { name: "Banteng", emoji: "🐂", hint: "Southeast Asian wild cattle" },
+            { name: "Aurochs", emoji: "🐂", hint: "Extinct wild ancestor of cattle" },
+            { name: "Wisent", emoji: "🐂", hint: "European bison" },
+            { name: "Zebu", emoji: "🐄", hint: "Humped cattle" },
+            { name: "Highland Cattle", emoji: "🐄", hint: "Shaggy Scottish cow" },
+            { name: "Angus", emoji: "🐄", hint: "Black beef cattle" },
+            { name: "Holstein", emoji: "🐄", hint: "Black and white dairy cow" },
+            { name: "Jersey", emoji: "🐄", hint: "Small brown dairy cow" },
+            { name: "Longhorn", emoji: "🐄", hint: "Cattle with long horns" },
+            { name: "Brahman", emoji: "🐄", hint: "Heat-resistant cattle" },
+            { name: "Charolais", emoji: "🐄", hint: "White French cattle" },
+            { name: "Hereford", emoji: "🐄", hint: "Red and white cattle" },
+            { name: "Simmental", emoji: "🐄", hint: "Red and white cattle" },
+            { name: "Limousin", emoji: "🐄", hint: "Golden cattle" },
+            { name: "Chianina", emoji: "🐄", hint: "Large white cattle" },
+            { name: "Belted Galloway", emoji: "🐄", hint: "Oreo cookie cow" }
         ];
 
         let currentAnimal = 0;
@@ -462,6 +567,7 @@
         let canvas, ctx;
         let isDrawing = false;
         let brushSize = 8;
+        let isErasing = false;
 
         function initGame() {
             canvas = document.getElementById('drawingCanvas');
@@ -480,8 +586,7 @@
 
             ctx.lineCap = 'round';
             ctx.lineJoin = 'round';
-            ctx.strokeStyle = '#ffffff';
-            ctx.lineWidth = brushSize;
+            updateDrawingStyle();
 
             loadRandomAnimal();
         }
@@ -512,6 +617,35 @@
             ctx.stroke();
         }
 
+        function updateDrawingStyle() {
+            if (isErasing) {
+                ctx.globalCompositeOperation = 'destination-out';
+                ctx.strokeStyle = 'rgba(0,0,0,1)';
+            } else {
+                ctx.globalCompositeOperation = 'source-over';
+                ctx.strokeStyle = '#ffffff';
+            }
+            ctx.lineWidth = brushSize;
+        }
+
+        function toggleEraser() {
+            isErasing = !isErasing;
+            updateDrawingStyle();
+
+            const eraserText = document.getElementById('eraserText');
+            const eraserBtn = document.querySelector('[onclick="toggleEraser()"]');
+
+            if (isErasing) {
+                eraserText.textContent = 'Draw';
+                eraserBtn.style.background = 'linear-gradient(135deg, #e17055 0%, #fdcb6e 100%)';
+                canvas.style.cursor = 'grab';
+            } else {
+                eraserText.textContent = 'Erase';
+                eraserBtn.style.background = 'linear-gradient(135deg, #fd79a8 0%, #fdcb6e 100%)';
+                canvas.style.cursor = 'crosshair';
+            }
+        }
+
         function stopDrawing() {
             isDrawing = false;
         }
@@ -533,7 +667,7 @@
 
         function updateBrushSize() {
             brushSize = document.getElementById('brushSize').value;
-            ctx.lineWidth = brushSize;
+            updateDrawingStyle();
             document.getElementById('brushSizeValue').textContent = brushSize + 'px';
         }
 
